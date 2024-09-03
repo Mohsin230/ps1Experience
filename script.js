@@ -1,0 +1,708 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+/* gsap plugins */
+gsap.registerPlugin(ScrollTrigger); 
+
+// Set up scene
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 2000);
+const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000, 1);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+const renderer2 = new THREE.WebGLRenderer({antialias: true, alpha: true});
+renderer2.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer2.setSize(window.innerWidth/2, window.innerHeight/2);
+renderer2.setClearColor(0x000000 , 1);
+renderer2.setPixelRatio(window.devicePixelRatio);
+
+const renderer3 = new THREE.WebGLRenderer({antialias: true, alpha: true});
+renderer3.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer3.setSize(window.innerWidth/2, window.innerHeight*0.75);
+renderer3.setClearColor(0x000000 , 1);
+renderer3.setPixelRatio(window.devicePixelRatio);
+
+document.getElementById('container').appendChild(renderer.domElement);
+
+document.getElementById('discs').appendChild(renderer2.domElement);
+
+//document.getElementById('3dPanel').appendChild(renderer3.domElement);
+
+//set up Disc Menu Scene
+const discScene = new THREE.Scene();
+const discCamera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 2000);
+// Load 3D model
+const discLoader = new GLTFLoader();
+
+//set up Text Menus Scene
+const textScene = new THREE.Scene();
+const textCamera = new THREE.PerspectiveCamera(20, (window.innerWidth/2) / (window.innerHeight*0.75), 1, 2000);
+// Load 3D model
+const textLoader = new GLTFLoader();
+
+//adding 3d panel for text info on selected disc
+const geometry = new THREE.BoxGeometry( (window.innerWidth/2)-100, (window.innerHeight*0.75), 100 ); 
+const material = new THREE.MeshBasicMaterial( {color: 0x3366ff} ); 
+const cube = new THREE.Mesh( geometry, material ); 
+const edges = new THREE.EdgesGeometry( geometry ); 
+const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) ); 
+textScene.add( line );
+textScene.add( cube );
+line.rotation.y = 75;
+cube.rotation.y = 75;
+
+cube.position.set(0,0,0);
+line.position.set(0,0,0);
+
+/*discLoader.load('FF73DDisc.glb', function (gltf) {
+    const mesh = gltf.scene;
+    //mesh.position.set(-0.125,1.45,3.5)
+    mesh.position.set(0,0,90);
+    mesh.rotation.x = 90;
+    mesh.rotation.y = 3.1;
+    discScene.add(mesh);
+});
+
+discLoader.load('FF73DDisc.glb', function (gltf) {
+    const mesh2 = gltf.scene;
+    //mesh.position.set(-0.125,1.45,3.5)
+    mesh2.position.set(5,0,90);
+    mesh2.rotation.x = 90;
+    mesh2.rotation.y = 3.1;
+    discScene.add(mesh2);
+});
+
+discLoader.load('FF73DDisc.glb', function (gltf) {
+    const mesh2 = gltf.scene;
+    //mesh.position.set(-0.125,1.45,3.5)
+    mesh2.position.set(10,0,90);
+    mesh2.rotation.x = 90;
+    mesh2.rotation.y = 3.1;
+    discScene.add(mesh2);
+});
+*/
+
+//boolean 0/1 to determine if mouse event is valid
+let moveAble  = 1; 
+
+// Load 3D model
+const loader = new GLTFLoader();
+loader.load('PS1Logo3D.glb', function (gltf) {
+    const mesh = gltf.scene;
+    //mesh.position.set(-0.125,1.45,3.5)
+    mesh.position.set(0.8,1.85,0)
+    mesh.rotation.x = 0.25;
+    mesh.rotation.y = -0.75;
+    scene.add(mesh);
+});
+
+// Load 2nd 3D model
+const loader2 = new GLTFLoader();
+var ps1Mesh;
+var ps1Spin = false;
+loader2.load('playstation_1.glb', function (gltf) {
+    ps1Mesh = gltf.scene;
+    //mesh.position.set(-0.125,1.45,3.5)
+    ps1Mesh.position.set(10,25.55,-80)
+    ps1Mesh.rotation.x = -75;
+    ps1Mesh.rotation.y = 0;
+    scene.add(ps1Mesh);
+});
+/*
+// Create a canvas to capture the iframe content
+const videoCanvas = document.createElement('canvas');
+const videoContext = videoCanvas.getContext('2d');
+videoCanvas.width = 1280;
+videoCanvas.height = 720;
+
+// Create a texture from the canvas
+const videoTexture = new THREE.Texture(videoCanvas);
+videoTexture.minFilter = THREE.LinearFilter;
+
+// Create a basic material with the video texture
+const material = new THREE.MeshBasicMaterial({ map: videoTexture });
+
+// Create a plane geometry
+const geometry = new THREE.PlaneGeometry(16, 9);
+
+// Create a mesh with the geometry and material
+const mesh3 = new THREE.Mesh(geometry, material);
+scene.add(mesh3);
+*/
+const controls = new OrbitControls(camera,renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 9;
+controls.maxDistance = 10;
+controls.minPolarAngle = 0.5;
+controls.maxPolarAngle = 1.5;
+controls.autoRotate = false;
+controls.target.set(1,3.05,0)
+//controls.target = new THREE.Vector3(0,1.25,0);
+
+// Set up lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(0, 1, 0);
+scene.add(directionalLight);
+
+const ambientLight2 = new THREE.AmbientLight(0xffffff, 0.5);
+const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight2.position.set(0, 1, 0);
+discScene.add(ambientLight2);
+discScene.add(directionalLight2);
+
+const ambientLight3 = new THREE.AmbientLight(0xffffff, 0.5);
+const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight3.position.set(0, 1, 0);
+textScene.add(ambientLight3);
+textScene.add(directionalLight3);
+
+// Set up camera
+camera.position.z = 100;
+camera.position.y = 0;
+camera.position.x = 0;
+
+discCamera.position.set(0,0,100);
+
+textCamera.position.set(0,10,2000);
+// Add mouse move event listener
+document.addEventListener('mousemove', onMouseMove, false);
+
+// Mouse movement variables
+let mouseX = 0, mouseY = 0;
+let windowHalfX = window.innerWidth / 2.5;
+let windowHalfY = window.innerHeight / 2.5;
+
+// Function to handle mouse movement
+function onMouseMove(event) {
+    mouseX = (event.clientX - windowHalfX) / 200;
+    mouseY = (event.clientY - windowHalfY) / 50;
+
+
+}
+
+/**
+ * Sizes
+ */
+const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
+
+window.addEventListener('resize', () =>
+{
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    windowHalfX = window.innerWidth / 2.5;
+    windowHalfY = window.innerHeight / 2.5;
+    
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    
+    discCamera.aspect = sizes.width / sizes.height
+    discCamera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer2.setSize(sizes.width/2, sizes.height/2)
+    renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+
+    textCamera.aspect = (sizes.width/2) / (sizes.height*0.75)
+    textCamera.updateProjectionMatrix()
+    // Update renderer
+    renderer3.setSize(sizes.width/2, sizes.height*0.75)
+    renderer3.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
+let bobble = true;
+// Add animation loop
+function animate() {
+    controls.update()
+    requestAnimationFrame(animate);
+    
+    // Update camera position based on mouse movement
+    camera.position.x += moveAble*(mouseX - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY - camera.position.y) * 0.02;
+
+
+    // Update camera position based on mouse movement
+    textCamera.position.x += (mouseX - textCamera.position.x) * 1;
+    textCamera.position.y += (-mouseY - textCamera.position.y) * 1;
+
+    if (bobble == true){
+        discCamera.position.y += 0.003;
+        if (discCamera.position.y >= 0.1){
+            bobble = false;
+        }
+    }
+    else{
+        discCamera.position.y -= 0.003;
+        if (discCamera.position.y <= -0.1){
+            bobble = true;
+        }
+    }
+
+
+    renderer.render(scene, camera);
+    renderer2.render(discScene, discCamera);
+    //renderer3.render(textScene, textCamera);
+
+    // Capture the iframe content and update the texture
+    //videoContext.drawImage(videoIframe.contentWindow.document.body, 0, 0, videoCanvas.width, videoCanvas.height);
+    //videoTexture.needsUpdate = true;
+}
+
+document.getElementById("playB1").onclick = function(){playTransition()};
+function playTransition(){
+    //const t1 = gsap.timeline()
+    //t1.to(controls.target.set(1,50,0),{duration: 2})
+    controls.enabled = false;
+		
+    gsap.to( controls.target, {
+        duration: 3,
+        y: 30,
+        onUpdate: function() {
+            
+            controls.update();
+        
+        },
+        onComplete: function() {
+        
+            //controls.enabled = true;
+        
+        }
+    } );
+    const content = CSSRulePlugin.getRule('.content:before')
+    const h1 = document.querySelector('h1')
+    const p = document.querySelector('p')
+    const pb = document.querySelector(".playButton")
+    const t1  = gsap.timeline()
+
+    t1.to(content, {delay: 0.5, duration: 2, cssRule: {scaleX: 0}})
+    t1.to(h1, {duration: 2, opacity: 0}, "-=2");
+    t1.to(p, {duration: 2, opacity: 0}, "-=2");
+    t1.to(pb, {duration: 2, bottom: '-40%'}, "-=2");
+    t1.to(".playButton2", {duration: 2, bottom: '2%'}, "-=1.5");
+    
+    camera.position.x = 0;
+    camera.position.y = 0;
+    moveAble = 0;
+}
+document.getElementById("playB2").onclick = function(){discPreview()};
+function discPreview(){
+    //const t1 = gsap.timeline()
+    //t1.to(controls.target.set(1,50,0),{duration: 2})
+    controls.enabled = false;
+		
+    gsap.to( controls.target, {
+        duration: 3,
+        x: 2.5,
+        onUpdate: function() {
+            
+            controls.update();
+        
+        },
+        onComplete: function() {
+        
+            //controls.enabled = true;
+        
+        }
+    } );
+    const t1  = gsap.timeline()
+
+
+    t1.to(".playButton2", {duration: 2, bottom: '-40%'});
+    t1.to(".discMenu", {duration: 2, left: '50%'}, "-=2");
+    gsap.to(ps1Mesh.rotation, { duration: 2, x: ps1Mesh.rotation.x + Math.PI * 2, y: ps1Mesh.rotation.y + Math.PI * 2, ease: "power1.inOut" });
+    //document.getElementById("discExitMenu").onclick = function(){exitDiscMenu()};
+
+}
+document.getElementById("discExitMenu").onclick = function(){exitDiscMenu()};
+function exitDiscMenu(){
+    console.log(jsonData['discs']);
+    controls.enabled = false;
+		
+    gsap.to( controls.target, {
+        duration: 3,
+        x: 1,
+        onUpdate: function() {
+            
+            controls.update();
+        
+        },
+        onComplete: function() {
+        
+            //controls.enabled = true;
+        
+        }
+    } );
+    const t1  = gsap.timeline()
+
+
+    t1.to(".playButton2", {duration: 2, bottom: '2%'});
+    t1.to(".discMenu", {duration: 2, left: '350%'}, "-=2");
+
+}
+4
+document.getElementById("nd").onclick = function(){switchDisc(1)};
+document.getElementById("pd").onclick = function(){switchDisc(-1)};
+function switchDisc(change){
+    console.log(jsonData['discs']);
+    currJsonDisc = (currJsonDisc + change)%jsonData['discs'].length;
+    if (currJsonDisc < 0){
+        currJsonDisc = jsonData['discs'].length + currJsonDisc; 
+    }
+        
+		
+    gsap.to( discCamera.position, {
+        duration: 3,
+        x: currJsonDisc*5,
+    } );
+    gsap.to(document.getElementById("discName"),{
+        duration: 1,
+        text: jsonData['discs'][currJsonDisc]['name'],
+        ease: "none",
+    })
+    gsap.to(document.getElementById("discPara"),{
+        duration: 0.5,
+        text: jsonData['discs'][currJsonDisc]['description'],
+        ease: "none",
+    })
+    gsap.to(".discMenu",{
+        duration: 1,
+        backgroundColor:jsonData['discs'][currJsonDisc]['color'],
+    })
+    //const t1  = gsap.timeline()
+
+
+    //t1.to(".playButton2", {duration: 2, bottom: '2%'});
+    //t1.to(".discMenu", {duration: 2, left: '350%'}, "-=2");
+
+}
+let jsonData;
+let currJsonDisc = 0;
+
+document.getElementById("startDisc").onclick = function(){playDisc(currJsonDisc)};
+function playDisc(currDisc){
+    //console.log(jsonData['discs']);
+    const loadingText = document.getElementById("loadText").innerHTML = "loading Disc...<br>" + jsonData['discs'][currDisc]['name'];
+    //exit disc menua and update text indicating which disc is loading up
+    exitDiscMenu();
+    const iframe = document.getElementById('video-iframe');
+
+    gsap.to( controls.target, {
+        duration: 5,
+        y: 150,
+        onUpdate: function() {
+            
+            controls.update();
+        
+        },
+        onComplete: function() {
+        
+            //controls.enabled = true;
+        
+        }
+    } );
+    const t2 = gsap.timeline()
+    t2.to(document.getElementById("loadText"),{
+        duration: 1,
+        opacity: 1,
+        onComplete: function() {
+            // Change the src after fading out
+            iframe.src = jsonData['discs'][currDisc]['video']; 
+            
+            const container = document.getElementById('discContent');
+            const trackDiv = document.createElement('div');
+            trackDiv.classList.add("myTracks");
+            trackDiv.classList.add("aboutPanel");
+            if(jsonData['discs'][currDisc]['music'].length > 1){
+                trackDiv.style.gridTemplateColumns = 'repeat(auto-fill, 400px)';
+            }
+            //trackDiv.style.display = 'flex';
+            //trackDiv.style.flex-wrap = 'wrap';
+            //trackDiv.style.justifyContent = 'center';
+            //insert iframes for music data
+            const musicLabel = document.createElement('label');
+            musicLabel.innerHTML = "Music - OST";
+            //musicLabel.style.textAlign = "center";
+            //musicLabel.style.paddingBottom = "100px";
+            trackDiv.appendChild(musicLabel);
+            for(let track in jsonData['discs'][currDisc]['music']){
+                // Create a div to hold each track
+                console.log(track)
+                const newTrack = document.createElement('div');
+                newTrack.innerHTML = jsonData['discs'][currDisc]['music'][track];
+                trackDiv.appendChild(newTrack);
+            }
+            
+            container.appendChild(trackDiv);
+            //document.getElementById("discContent").style.pointerEvents = "auto";
+            const dc = document.getElementById('discContent');
+            document.getElementById("container-disc").style.pointerEvents = "auto";
+            document.getElementById("container-disc").style.overflowY = "auto";
+            
+            //const photos = gsap.utils.toArray(".photo:not(:first-child)")
+            const photos = gsap.utils.toArray(".photo");
+            const chars  = [];
+            const charTag = document.getElementById("characterTag");
+
+            //load in images related to the ps1 game
+            if(jsonData['discs'][currDisc]['images']){
+                for(let p = 0; p < photos.length; p++){
+                    photos[p].lastElementChild.src = jsonData['discs'][currDisc]['images'][p];
+                }
+            }
+            if(jsonData['discs'][currDisc]['characters']){
+                const charPanel = document.getElementById("charPhotos");
+                for(const [key, value] of Object.entries(jsonData['discs'][currDisc]['characters'])){
+                    let charDiv = document.createElement('img');
+                    charDiv.classList.add("myChar");
+                    chars.push(charDiv);
+                    //charDiv.style.overflow = "hidden";
+                    charDiv.style.position = "absolute";
+                    charDiv.style.width = "max(40vw,40vw)";
+                    //charDiv.style.overflow = "auto";
+                    //charDiv.style.maxWidth = "100%";
+                    //charDiv.style.height = "auto";
+                    //charDiv.style.maxHeight = "100vh";
+                    //charDiv.style.display = "flex";
+                    //charDiv.style.backgroundColor = "red";
+                    //charDiv.style.clipPath = "circle(55.8% at 85% 20%)";
+                    charDiv.src = jsonData['discs'][currDisc]['characters'][key];
+                    charPanel.appendChild(charDiv);
+                }
+            }
+            let charDiv = document.createElement('img');
+            chars.push(charDiv);
+
+            //load in text for about section
+            if(jsonData['discs'][currDisc]['about']){
+                const aboutPanel = document.getElementById("aPanel1");
+                let newInfo = document.createElement('h3');
+                for (const [key, value] of Object.entries(jsonData['discs'][currDisc]['about'])) {
+                    console.log(`${key}: ${value}`);
+                    newInfo.innerHTML += `<b>${key}:</b> ${value}<br>`;
+                    aboutPanel.appendChild(newInfo);
+                  }
+            }
+            //load in text for review section
+            if(jsonData['discs'][currDisc]['reviews']){
+                const aboutPanel = document.getElementById("aPanel2");
+                let newInfo = document.createElement('h3');
+                for (const [key, value] of Object.entries(jsonData['discs'][currDisc]['reviews'])) {
+                    console.log(`${key}: ${value}`);
+                    if(value === parseFloat(value)){
+                        let starGrade = value*10;
+                        let starBlank = 100-starGrade;
+                        newInfo.innerHTML += `<b>${key}:</b> <span style="margin:auto; display: inline-block; background: linear-gradient(to right, orange ${starGrade}%, black ${starGrade}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">&starf;&starf;&starf;&starf;&starf;</span> ${value}/10<br>`;
+                    }
+                    else{
+                        newInfo.innerHTML += `<b>${key}:</b> ${value}<br><br>`;
+                    }
+                    aboutPanel.appendChild(newInfo);
+                    }
+            }
+
+            console.log(photos);
+            const aPhotos = photos.slice(1)
+            gsap.set(aPhotos, {yPercent:0, xPercent:-105})
+            const animation = gsap.to(aPhotos,{
+                yPercent:0, xPercent:0, duration:1, stagger:3
+            })
+
+            gsap.set(chars, {yPercent: -50, xPercent:105})
+            const animation2 = gsap.to(chars,{
+                xPercent:-50, duration:1, stagger:3
+            })
+            let charKeys = Object.keys(jsonData['discs'][currDisc]['characters']);
+            let currProg = -1;
+            //scrollTrigger for character info
+            ScrollTrigger.create({
+                scroller: ".dContain",
+                trigger:".dContents",
+                toggleActions: "play none reverse none",
+                onEnter:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
+                onLeave:()=> gsap.to(".charPanel", {duration: 1, top: "-120%"}),
+                onEnterBack:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
+                onLeaveBack:()=> gsap.to(".charPanel", {duration: 1, top: "120%"}),
+                start: "105% 0%",
+                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+                end: "200% 0%", 
+                //onEnter:()=> console.log("enter"),
+                //onLeave:()=> console.log("leave"),
+                onUpdate: (self) => {
+                    console.log(self.progress);
+                    gsap.to("progress",{
+                    duration: 0.1, 
+                    value: self.progress*100
+                    });
+                    //modulo of self.progress by 25% to get a animation
+                    //trigger for each image with a text change
+                    let charProg = Math.max(0,Math.floor((self.progress*100-10) / 30));
+                    if(charProg != currProg && charProg < 4){
+                        gsap.to(document.getElementById("characterTag"),{
+                            duration: 0.5,
+                            text: charKeys[charProg],
+                            ease: "none",
+                        });
+                        currProg = charProg;
+                    }
+
+
+                },
+                markers: true,
+                pin: true,
+                animation: animation2,
+                scrub: 2,
+                pinSpacing: false
+            }
+            );
+
+            /*ScrollTrigger.create({
+                scroller: ".dContain",
+                trigger:".dContents",
+                start: "top 20%",
+                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+                end: "90% 20%", 
+                //onEnter:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 0.3}),
+                //onLeave:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 1}),,
+                pin: ".panels3d",
+                markers: true,
+                
+            });*/
+            ScrollTrigger.create({
+                scroller: ".dContain",
+                trigger:".dContents",
+                start: "top 20%",
+                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+                end: "90% 20%", 
+                //onEnter:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 0.3}),
+                //onLeave:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 1}),,
+                pin: ".photos",
+                animation:animation,
+                scrub:true,
+                markers: true,
+                
+            });
+
+        }
+    });
+    t2.to(document.getElementById("loadText"),{
+        duration: 3,
+        opacity: 0,
+    });
+    // Fade in the new video
+    t2.to(iframe, {delay:1, duration: 5, opacity: 1});
+    //document.getElementById("video-iframe").src = jsonData['discs'][currDisc]['video'];
+    /*gsap.to(document.getElementById("video-iframe"),{
+        duration: 10,
+        opacity: 1,
+        src: jsonData['discs'][currDisc]['video'],
+    });*/
+    //document.getElementById("video-iframe").style.pointerEvents = "auto";
+    const t1  = gsap.timeline()
+
+
+    t1.to(".playButton2", {duration: 2, bottom: '-40%'});
+    t1.to(".canScroll", {duration: 1, opacity: '1',
+        onComplete: function(){
+
+        }
+    });
+
+    //t1.to(".discMenu", {duration: 2, left: '350%'}, "-=2");
+
+
+}
+
+
+
+
+//gsap anim for progress bar for character portraits
+gsap.to('progress', {
+    value: 100,
+    ease: 'none',
+    scrollTrigger: { 
+      trigger: "#mySection",
+      scrub: 0.3 
+    }
+});
+
+//gsap anim for scroll trigger of scrollable disc page (when disc is picked)
+gsap.fromTo(".canScroll",{opacity:1},{
+    scrollTrigger:{
+        scroller: ".dContain",
+        trigger:".canScroll",
+        toggleActions: "play none reverse none",
+        //onEnter:()=> gsap.to(iframe, {duration: 2, opacity: 0.3}),
+        //onLeave:()=> gsap.to(iframe, {duration: 2, opacity: 1}),
+        start: "bottom 95%",
+        //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+        end: "bottom 95%", 
+        //onEnter:()=> console.log("enter"),
+        //onLeave:()=> console.log("leave"),
+        markers: true
+    },
+    opacity: 0,
+    duration: 1
+});
+gsap.to(".canScroll",{duration: 0.1, opacity:0});
+
+//const photos = gsap.utils.toArray(".des")
+const discName = document.getElementById("discName");
+
+fetch('discList.json')
+  .then(response => response.json())
+  .then(data => {
+    jsonData = data;
+    var discCount = 0;
+    for(const disc of jsonData['discs']){
+        discLoader.load(disc['model'], function (gltf) {
+            const mesh = gltf.scene;
+            //mesh.position.set(-0.125,1.45,3.5)
+            mesh.position.set(discCount*5,0,90);
+            mesh.rotation.x = 90;
+            mesh.rotation.y = 3.1;
+            discScene.add(mesh);
+            discCount += 1;
+        });
+    }
+    console.log(jsonData['discs']);  // Now jsonData holds the JSON data
+    discInfoUpdate(jsonData['discs'][0])
+    })
+  .catch(error => console.error('Error fetching the JSON file:', error));
+
+
+function discInfoUpdate(discData){
+    document.getElementById("discName").innerHTML = discData['name'];
+    document.getElementById("discPara").innerHTML = discData['description'];
+    document.getElementById("discPara").innerHTML = discData['description'];
+}
+
+
+
+// Function to change the video source
+function changeVideoSource(newVideoId) {
+    const iframeSrc = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&enablejsapi=1`;
+    videoIframe.src = iframeSrc;
+}
+
+
+
+animate();

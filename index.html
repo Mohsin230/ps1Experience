@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="#">
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@v0.164.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.164.1/examples/jsm/"
+          }
+        }
+      </script>
+</head>
+<body>
+    <div id="mainP" class="mainPage">
+
+      <!--
+      <iframe style="pointer-events: auto;" width="50%" height="200" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/141371041&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/final-fantasy-7-ost" title="Final Fantasy 7 OST 1" target="_blank" style="color: #cccccc; text-decoration: none;">Final Fantasy 7 OST 1</a> · <a href="https://soundcloud.com/final-fantasy-7-ost/13-turks-theme" title="Turks&#x27; Theme" target="_blank" style="color: #cccccc; text-decoration: none;">Turks&#x27; Theme</a></div>
+      -->
+      <button id="returnDisc" class="rDisc">&#8678;</button>
+      <div class="content">
+        <h1>The Playstion<br>Experience</h1>
+        <p>Explore The History and <br>Heights of The PS1.</p>
+      </div>
+      <button id="playB1" class="playButton">Play!</button>
+      <button id="playB2" class="playButton2">Select Disc!</button>
+      <div id="discs" class="discMenu">
+        <button id="discExitMenu" class="exitMenu">&#11199;</button>
+        <h3 id="discName">Disc name</h3>
+        <h4 id="discPara">Disc description</h4>
+        
+        <button id="nd"class="nextDisc">&#8680;</button>
+        <button id="pd" class="prevDisc">&#8678;</button>
+        <button id="startDisc" class="startDisc">&#11214; Start &#11214;</button>
+
+      </div>
+      
+      <h3 id="loadText" style="display:flex; position: absolute; place-content: center; text-align:center; bottom: 50%; opacity: 0%; width: 100%; color:aqua;">loading Disc...</h3>
+      <!--
+      <iframe id="video-iframe" src="https://www.youtube.com/embed/6CORYpK6_W8&ab_channel=FINALFANTASY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      -->
+      <iframe id="video-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      
+
+    </div>
+    
+    
+    
+    <div id="container">
+    </div>
+
+    <div class="charPanel aboutPanel">
+      <h2 style="left: 15vw; top: 40vh;" >Characters!</h2>
+      <p id="characterTag" style="position: absolute; left: 10vw; top: 40vh;" >Spyro the dragon...</p>
+      <div id="charPhotos" class="cPhotos">
+
+      </div>
+      <progress id="file" value="0" max="100"> 50% </progress>
+    </div>
+    <div id="container-disc" class="dContain">
+
+      <!--
+      <h5 style="width: 100%; height: 100%; position: relative; justify-self: center;">PS1Game!</h5>
+      -->
+      <div class="canScroll">
+        <h3 id="scrollIcon">&#11147;</h3>
+      </div>
+      <div id="discContent" class="dContents">
+
+        <div id="dPhotos" class="photos">
+          <div class="photo red">
+            <img>
+          </div>
+          <div class="photo blue">
+            <img>
+          </div>
+          <div class="photo green">
+            <img>
+          </div>
+          <div class="photo pink">
+            <img>
+          </div>
+        </div>
+        <!--
+        <div class="emptySpace"></div>
+        -->
+        <div class="discAbout">
+          <!--
+          <div id="3dPanel" class="panels3d"></div>
+          -->
+
+          <div id="aPanel1" class="aboutPanel">
+            <h2>About</h2>
+            <!-- #COMMENTED OUT, has hard coded about section data
+            <h3 class="aboutDate"><b style="font-size: min(4vw,2rem); text-decoration: underline; text-decoration-color: black;">Release Date:</b>  febuary 25 1998</h3>
+            <h3 class="aboutGenres"><b style="font-size: min(4vw,2rem); text-decoration: underline; text-decoration-color: black;">Genres:</b>  fighting, arcade, 1v1</h3>
+            <h3 style="z-index: 1;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur vitae fugit vero voluptate dolores eos nam vel accusamus blanditiis maxime animi, maiores delectus officia. Tempore nostrum animi tenetur cupiditate temporibus?</h3>
+            -->
+          </div>
+          <div id="aPanel2" class="aboutPanel">
+            <h2>Reviews</h2>
+            <!-- #COMMENTED OUT, has placeholder text
+            <h3 style="z-index: 100;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur vitae fugit vero voluptate dolores eos nam vel accusamus blanditiis maxime animi, maiores delectus officia. Tempore nostrum animi tenetur cupiditate temporibus?</h3>
+            <h3 style="z-index: 100;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur vitae fugit vero voluptate dolores eos nam vel accusamus blanditiis maxime animi, maiores delectus officia. Tempore nostrum animi tenetur cupiditate temporibus?</h3>
+            -->
+          </div>
+        </div>
+        <!-- #Commented out, hard coded placeholder text to check grid system for disc info
+        <div>
+          <h3 style="z-index: 100;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur vitae fugit vero voluptate dolores eos nam vel accusamus blanditiis maxime animi, maiores delectus officia. Tempore nostrum animi tenetur cupiditate temporibus?</h3>
+          <h3 style="z-index: 100;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur vitae fugit vero voluptate dolores eos nam vel accusamus blanditiis maxime animi, maiores delectus officia. Tempore nostrum animi tenetur cupiditate temporibus?</h3>
+          <h3 style="z-index: 100;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur vitae fugit vero voluptate dolores eos nam vel accusamus blanditiis maxime animi, maiores delectus officia. Tempore nostrum animi tenetur cupiditate temporibus?</h3>
+          
+        </div>
+        -->
+      </div>
+  </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CSSRulePlugin.min.js" integrity="sha512-IxxYrSNXnt/RJlxNX40+7BQL88FLqvdpVpuV9AuvpNH/NFP0L8xA8WLxWTXx6PYExB5R/ktQisp6tIrnLn8xvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/TextPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script>
+      const content = CSSRulePlugin.getRule('.content:before')
+      const h1 = document.querySelector('h1')
+      const p = document.querySelector('p')
+      const t1 = gsap.timeline()
+
+      t1.from(content, {delay: 0.5, duration: 2, cssRule: {scaleX: 0}})
+      t1.to(h1, {duration: 2, clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)'}, '-=1')
+      t1.to(p, {duration: 2, clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0% 100%)'}, '-=1.5')
+    </script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
+
+
+
