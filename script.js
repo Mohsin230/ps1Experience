@@ -2,22 +2,59 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 /* gsap plugins */
-gsap.registerPlugin(ScrollTrigger); 
+gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true }); 
+let isMobile = false;
+let activeBackground = true;
+if(ScrollTrigger.isTouch === 1){
+    isMobile = true;
+    console.log(isMobile);
+    //ScrollTrigger.normalizeScroll(true);
+    /*window.addEventListener('touchmove', ev => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+      }, { passive: false });*/
+}
+let mm = gsap.matchMedia(),
+  breakPoint = 800;
 
+/*ScrollTrigger.scrollerProxy("#container-disc", {
+    scrollTop(value) {
+        return arguments.length ? document.querySelector("#container-disc").scrollTop = value : document.querySelector("#container-disc").scrollTop;
+    },
+    getBoundingClientRect() {
+        return {
+            top: 0,
+            left: 0,
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+    }
+});*/
+
+console.log(isMobile);
+//ScrollTrigger.normalizeScroll((true));
+//this one solves an issue for resizing a during a pinned scroll trigger
+/*ScrollTrigger.normalizeScroll({
+    allowNestedScroll: true,
+    lockAxis: false,
+    momentum: self => Math.min(2, self.velocityY / 1000), // dynamically control the duration of the momentum when flick-scrolling
+    type: "touch", // now the page will be drag-scrollable on desktop because "pointer" is in the list
+  });*/
 // Set up scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 2000);
+const camera = new THREE.PerspectiveCamera(20, window.visualViewport.width / window.visualViewport.height, 1, 2000);
 const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.visualViewport.width, window.visualViewport.height);
 renderer.setClearColor(0x000000, 1);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 const renderer2 = new THREE.WebGLRenderer({antialias: true, alpha: true});
 renderer2.outputColorSpace = THREE.SRGBColorSpace;
 
-renderer2.setSize(window.innerWidth/2, window.innerHeight/2);
+renderer2.setSize(window.visualViewport.width/2, window.visualViewport.height/2);
 renderer2.setClearColor(0x000000 , 1);
 renderer2.setPixelRatio(window.devicePixelRatio);
 
@@ -39,7 +76,7 @@ const discScene = new THREE.Scene();
 const discCamera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 2000);
 // Load 3D model
 const discLoader = new GLTFLoader();
-
+/*
 //set up Text Menus Scene
 const textScene = new THREE.Scene();
 const textCamera = new THREE.PerspectiveCamera(20, (window.innerWidth/2) / (window.innerHeight*0.75), 1, 2000);
@@ -59,7 +96,7 @@ cube.rotation.y = 75;
 
 cube.position.set(0,0,0);
 line.position.set(0,0,0);
-
+*/
 /*discLoader.load('FF73DDisc.glb', function (gltf) {
     const mesh = gltf.scene;
     //mesh.position.set(-0.125,1.45,3.5)
@@ -158,13 +195,13 @@ const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight2.position.set(0, 1, 0);
 discScene.add(ambientLight2);
 discScene.add(directionalLight2);
-
+/*
 const ambientLight3 = new THREE.AmbientLight(0xffffff, 0.5);
 const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight3.position.set(0, 1, 0);
 textScene.add(ambientLight3);
 textScene.add(directionalLight3);
-
+*/
 // Set up camera
 camera.position.z = 100;
 camera.position.y = 0;
@@ -172,7 +209,7 @@ camera.position.x = 0;
 
 discCamera.position.set(0,0,100);
 
-textCamera.position.set(0,10,2000);
+//textCamera.position.set(0,10,2000);
 // Add mouse move event listener
 document.addEventListener('mousemove', onMouseMove, false);
 
@@ -193,75 +230,83 @@ function onMouseMove(event) {
  * Sizes
  */
 const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+    width: window.visualViewport.width,
+    height: window.visualViewport.height
 }
 
 window.addEventListener('resize', () =>
 {
     // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
+    sizes.width = window.visualViewport.width;
+    sizes.height = window.visualViewport.height;
 
-    windowHalfX = window.innerWidth / 2.5;
-    windowHalfY = window.innerHeight / 2.5;
+    windowHalfX = window.visualViewport.width / 2.5;
+    windowHalfY = window.visualViewport.height / 2.5;
     
     // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
 
     // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
-    discCamera.aspect = sizes.width / sizes.height
-    discCamera.updateProjectionMatrix()
+    discCamera.aspect = sizes.width / sizes.height;
+    discCamera.updateProjectionMatrix();
 
     // Update renderer
-    renderer2.setSize(sizes.width/2, sizes.height/2)
-    renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer2.setSize(sizes.width/2, sizes.height/2);
+    renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-
-    textCamera.aspect = (sizes.width/2) / (sizes.height*0.75)
-    textCamera.updateProjectionMatrix()
+    console.log("hi");
+    /*ScrollTrigger.normalizeScroll({
+        allowNestedScroll: true,
+        lockAxis: false,
+        momentum: self => Math.min(2, self.velocityY / 1000), // dynamically control the duration of the momentum when flick-scrolling
+        type: "touch", // now the page will be drag-scrollable on desktop because "pointer" is in the list
+      });*/
+    ScrollTrigger.refresh();
+    //textCamera.aspect = (sizes.width/2) / (sizes.height*0.75);
+    //textCamera.updateProjectionMatrix();
     // Update renderer
-    renderer3.setSize(sizes.width/2, sizes.height*0.75)
-    renderer3.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    //renderer3.setSize(sizes.width/2, sizes.height*0.75);
+    //renderer3.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 })
 
 let bobble = true;
 // Add animation loop
 function animate() {
-    controls.update()
-    requestAnimationFrame(animate);
-    
-    // Update camera position based on mouse movement
-    camera.position.x += moveAble*(mouseX - camera.position.x) * 0.02;
-    camera.position.y += (-mouseY - camera.position.y) * 0.02;
+    if(activeBackground){
+        controls.update()
+        requestAnimationFrame(animate);
+        
+        // Update camera position based on mouse movement
+        camera.position.x += moveAble*(mouseX - camera.position.x) * 0.02;
+        camera.position.y += (-mouseY - camera.position.y) * 0.02;
 
 
-    // Update camera position based on mouse movement
-    textCamera.position.x += (mouseX - textCamera.position.x) * 1;
-    textCamera.position.y += (-mouseY - textCamera.position.y) * 1;
+        // Update camera position based on mouse movement
+        //textCamera.position.x += (mouseX - textCamera.position.x) * 1;
+        //textCamera.position.y += (-mouseY - textCamera.position.y) * 1;
 
-    if (bobble == true){
-        discCamera.position.y += 0.003;
-        if (discCamera.position.y >= 0.1){
-            bobble = false;
+        if (bobble == true){
+            discCamera.position.y += 0.003;
+            if (discCamera.position.y >= 0.1){
+                bobble = false;
+            }
         }
-    }
-    else{
-        discCamera.position.y -= 0.003;
-        if (discCamera.position.y <= -0.1){
-            bobble = true;
+        else{
+            discCamera.position.y -= 0.003;
+            if (discCamera.position.y <= -0.1){
+                bobble = true;
+            }
         }
+
+
+        renderer.render(scene, camera);
+        renderer2.render(discScene, discCamera);
+        //renderer3.render(textScene, textCamera);
     }
-
-
-    renderer.render(scene, camera);
-    renderer2.render(discScene, discCamera);
-    //renderer3.render(textScene, textCamera);
-
     // Capture the iframe content and update the texture
     //videoContext.drawImage(videoIframe.contentWindow.document.body, 0, 0, videoCanvas.width, videoCanvas.height);
     //videoTexture.needsUpdate = true;
@@ -358,7 +403,6 @@ function exitDiscMenu(){
     t1.to(".discMenu", {duration: 2, left: '350%'}, "-=2");
 
 }
-4
 document.getElementById("nd").onclick = function(){switchDisc(1)};
 document.getElementById("pd").onclick = function(){switchDisc(-1)};
 function switchDisc(change){
@@ -403,27 +447,34 @@ function playDisc(currDisc){
     const loadingText = document.getElementById("loadText").innerHTML = "loading Disc...<br>" + jsonData['discs'][currDisc]['name'];
     //exit disc menua and update text indicating which disc is loading up
     exitDiscMenu();
+    
     const iframe = document.getElementById('video-iframe');
 
-    gsap.to( controls.target, {
-        duration: 5,
+    const t2 = gsap.timeline()
+    t2.to( controls.target, {
+        duration: 1,
         y: 150,
         onUpdate: function() {
             
-            controls.update();
+            //controls.update();
         
         },
         onComplete: function() {
-        
-            //controls.enabled = true;
+            activeBackground = false;
+            controls.enabled = false;
         
         }
     } );
-    const t2 = gsap.timeline()
+
+    gsap.to(".playButton2", {duration: 2, bottom: '-40%'});
+    
     t2.to(document.getElementById("loadText"),{
         duration: 1,
         opacity: 1,
-        onComplete: function() {
+        onComplete: function() {  
+            
+            //const element = document.getElementById("container");
+            //element.remove();
             // Change the src after fading out
             iframe.src = jsonData['discs'][currDisc]['video']; 
             
@@ -443,6 +494,7 @@ function playDisc(currDisc){
             //musicLabel.style.textAlign = "center";
             //musicLabel.style.paddingBottom = "100px";
             trackDiv.appendChild(musicLabel);
+
             for(let track in jsonData['discs'][currDisc]['music']){
                 // Create a div to hold each track
                 console.log(track)
@@ -453,10 +505,7 @@ function playDisc(currDisc){
             
             container.appendChild(trackDiv);
             //document.getElementById("discContent").style.pointerEvents = "auto";
-            const dc = document.getElementById('discContent');
-            document.getElementById("container-disc").style.pointerEvents = "auto";
-            document.getElementById("container-disc").style.overflowY = "auto";
-            
+
             //const photos = gsap.utils.toArray(".photo:not(:first-child)")
             const photos = gsap.utils.toArray(".photo");
             const chars  = [];
@@ -520,34 +569,85 @@ function playDisc(currDisc){
             }
 
             console.log(photos);
-            const aPhotos = photos.slice(1)
+            const aPhotos = photos.slice(1);
             gsap.set(aPhotos, {yPercent:0, xPercent:-105})
-            const animation = gsap.to(aPhotos,{
-                yPercent:0, xPercent:0, duration:1, stagger:3
-            })
-
+            mm.add("(max-width: 768px)",() => {
+                let animation = gsap.to(aPhotos,{
+                    yPercent:0, xPercent:0, duration:1, stagger:3, delay: 1, yoyo: true, repeat: -1
+                });
+                
+                ScrollTrigger.refresh();
+            });
             gsap.set(chars, {yPercent: -50, xPercent:105})
             const animation2 = gsap.to(chars,{
                 xPercent:-50, duration:1, stagger:3
             })
             let charKeys = Object.keys(jsonData['discs'][currDisc]['characters']);
             let currProg = -1;
+
+
+            /*ScrollTrigger.create({
+                scroller: ".dContain",
+                trigger:".dContents",
+                start: "top 20%",
+                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+                end: "90% 20%", 
+                //onEnter:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 0.3}),
+                //onLeave:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 1}),,
+                pin: ".panels3d",
+                markers: true,
+                
+            });*/
+            mm.add("(min-width: 769px)", () =>{
+                let animation = gsap.to(aPhotos,{
+                    yPercent:0, xPercent:0, duration:1, stagger:3, delay: 0
+                })
+                ScrollTrigger.create({
+                    scroller: ".dContain",
+                    trigger:".discAbout",
+                    start: "top 20%",
+                    //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+                    end: "75% 20%", 
+                    pin: ".photos",
+                    animation:animation,
+                    scrub:true,
+                    markers: true,
+                    anticipatePin: 1,
+                    pinSpacing: true,
+                    pinType: "transform",
+                    fastScrollEnd: true, // This improves scroll end detection speed on touch devices
+                    ignoreMobileResize: false,
+                    invalidateOnRefresh: true
+
+                    
+                    
+                });
+
+                
+
+                
+                //container.style.rowGap = "250vh";
+                //ScrollTrigger.refresh();
+                //container.style.overflowY = "hidden";
+                //container.style.height = "300%";
+                //disableScroll();
+            });
+            
             //scrollTrigger for character info
             ScrollTrigger.create({
                 scroller: ".dContain",
-                trigger:".dContents",
+                trigger:".cPhotos",
                 toggleActions: "play none reverse none",
                 onEnter:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
-                onLeave:()=> gsap.to(".charPanel", {duration: 1, top: "-120%"}),
+                onLeave:()=> gsap.to(".charPanel", {duration: 1, top: "-0%"}),
                 onEnterBack:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
-                onLeaveBack:()=> gsap.to(".charPanel", {duration: 1, top: "120%"}),
-                start: "105% 0%",
+                onLeaveBack:()=> gsap.to(".charPanel", {duration: 1, top: "0%"}),
                 //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
-                end: "200% 0%", 
+                end: "bottom+=5000px 0%", 
                 //onEnter:()=> console.log("enter"),
                 //onLeave:()=> console.log("leave"),
                 onUpdate: (self) => {
-                    console.log(self.progress);
+                    //console.log(self.progress);
                     gsap.to("progress",{
                     duration: 0.1, 
                     value: self.progress*100
@@ -567,48 +667,52 @@ function playDisc(currDisc){
 
                 },
                 markers: true,
-                pin: true,
+                pin: ".charPanel",
                 animation: animation2,
-                scrub: 2,
-                pinSpacing: false
+                scrub: 1,
+                invalidateOnRefresh: true,
+                immediateRender:false,
+                ignoreMobileResize: false,
+                fastScrollEnd: true, // This improves scroll end detection speed on touch devices
+                pinSpacing: true,
+                pinType: "transform"
             }
             );
 
-            /*ScrollTrigger.create({
-                scroller: ".dContain",
-                trigger:".dContents",
-                start: "top 20%",
-                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
-                end: "90% 20%", 
-                //onEnter:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 0.3}),
-                //onLeave:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 1}),,
-                pin: ".panels3d",
-                markers: true,
-                
+            // Refresh ScrollTrigger after scroller initialization
+            /*ScrollTrigger.normalizeScroll({
+                allowNestedScroll: true,
+                lockAxis: false,
+                momentum: self => Math.min(2, self.velocityY / 1000), // dynamically control the duration of the momentum when flick-scrolling
+                type: "touch", // now the page will be drag-scrollable on desktop because "pointer" is in the list
             });*/
-            ScrollTrigger.create({
-                scroller: ".dContain",
-                trigger:".dContents",
-                start: "top 20%",
-                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
-                end: "90% 20%", 
-                //onEnter:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 0.3}),
-                //onLeave:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 1}),,
-                pin: ".photos",
-                animation:animation,
-                scrub:true,
-                markers: true,
-                
-            });
+            ScrollTrigger.refresh();
+
+            
 
         }
     });
     t2.to(document.getElementById("loadText"),{
-        duration: 3,
+        duration: 2,
         opacity: 0,
     });
+    t2.to(".canScroll", {duration: 1, opacity: '1',
+        onComplete: function(){
+            const dc = document.getElementById('discContent');
+            document.getElementById("container-disc").style.pointerEvents = "auto";
+            document.getElementById("container-disc").style.touchAction = "auto";
+            document.getElementById("container-disc").style.overflowY = "auto";
+            
+        }
+    });
     // Fade in the new video
-    t2.to(iframe, {delay:1, duration: 5, opacity: 1});
+    t2.to(iframe, {delay:1, duration: 3, opacity: 1,
+        onComplete: function(){
+            const element = document.getElementById("container");
+            element.remove();
+        }
+
+    });
     //document.getElementById("video-iframe").src = jsonData['discs'][currDisc]['video'];
     /*gsap.to(document.getElementById("video-iframe"),{
         duration: 10,
@@ -616,15 +720,11 @@ function playDisc(currDisc){
         src: jsonData['discs'][currDisc]['video'],
     });*/
     //document.getElementById("video-iframe").style.pointerEvents = "auto";
-    const t1  = gsap.timeline()
+    //const t1  = gsap.timeline()
 
 
-    t1.to(".playButton2", {duration: 2, bottom: '-40%'});
-    t1.to(".canScroll", {duration: 1, opacity: '1',
-        onComplete: function(){
+    
 
-        }
-    });
 
     //t1.to(".discMenu", {duration: 2, left: '350%'}, "-=2");
 
@@ -633,7 +733,7 @@ function playDisc(currDisc){
 
 
 
-
+/*
 //gsap anim for progress bar for character portraits
 gsap.to('progress', {
     value: 100,
@@ -642,7 +742,7 @@ gsap.to('progress', {
       trigger: "#mySection",
       scrub: 0.3 
     }
-});
+});*/
 
 //gsap anim for scroll trigger of scrollable disc page (when disc is picked)
 gsap.fromTo(".canScroll",{opacity:1},{
@@ -652,9 +752,9 @@ gsap.fromTo(".canScroll",{opacity:1},{
         toggleActions: "play none reverse none",
         //onEnter:()=> gsap.to(iframe, {duration: 2, opacity: 0.3}),
         //onLeave:()=> gsap.to(iframe, {duration: 2, opacity: 1}),
-        start: "bottom 95%",
+        start: "90% 85%",
         //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
-        end: "bottom 95%", 
+        end: "90% 85%", 
         //onEnter:()=> console.log("enter"),
         //onLeave:()=> console.log("leave"),
         markers: true
@@ -703,6 +803,12 @@ function changeVideoSource(newVideoId) {
     videoIframe.src = iframeSrc;
 }
 
-
+// Disable scroll on the underlying page after a certain function runs
+function disableScroll() {
+    document.body.style.overflow = 'hidden'; 
+    document.body.style.height = '100%';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.height = '100%';
+}
 
 animate();
