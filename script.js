@@ -58,12 +58,12 @@ renderer2.setSize(window.visualViewport.width/2, window.visualViewport.height/2)
 renderer2.setClearColor(0x000000 , 1);
 renderer2.setPixelRatio(window.devicePixelRatio);
 
-const renderer3 = new THREE.WebGLRenderer({antialias: true, alpha: true});
+/*const renderer3 = new THREE.WebGLRenderer({antialias: true, alpha: true});
 renderer3.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer3.setSize(window.innerWidth/2, window.innerHeight*0.75);
 renderer3.setClearColor(0x000000 , 1);
-renderer3.setPixelRatio(window.devicePixelRatio);
+renderer3.setPixelRatio(window.devicePixelRatio);*/
 
 document.getElementById('container').appendChild(renderer.domElement);
 
@@ -449,6 +449,30 @@ function playDisc(currDisc){
     exitDiscMenu();
     
     const iframe = document.getElementById('video-iframe');
+    
+    // Change the video src after fading out
+    iframe.src = jsonData['discs'][currDisc]['video']; 
+    const container = document.getElementById('discContent');
+    const trackDiv = document.createElement('div');
+    trackDiv.classList.add("myTracks");
+    trackDiv.classList.add("aboutPanel");
+    if(jsonData['discs'][currDisc]['music'].length > 1){
+        trackDiv.style.gridTemplateColumns = 'repeat(auto-fill, 400px)';
+    }
+
+    //insert soundcloud iframes for music data
+    const musicLabel = document.createElement('label');
+    musicLabel.innerHTML = "Music - OST";
+    trackDiv.appendChild(musicLabel);
+    for(let track in jsonData['discs'][currDisc]['music']){
+        // Create a div to hold each track
+        console.log(track)
+        const newTrack = document.createElement('div');
+        newTrack.innerHTML = jsonData['discs'][currDisc]['music'][track];
+        trackDiv.appendChild(newTrack);
+    }
+    
+    container.appendChild(trackDiv);
 
     const t2 = gsap.timeline()
     t2.to( controls.target, {
@@ -475,35 +499,7 @@ function playDisc(currDisc){
             
             //const element = document.getElementById("container");
             //element.remove();
-            // Change the src after fading out
-            iframe.src = jsonData['discs'][currDisc]['video']; 
-            
-            const container = document.getElementById('discContent');
-            const trackDiv = document.createElement('div');
-            trackDiv.classList.add("myTracks");
-            trackDiv.classList.add("aboutPanel");
-            if(jsonData['discs'][currDisc]['music'].length > 1){
-                trackDiv.style.gridTemplateColumns = 'repeat(auto-fill, 400px)';
-            }
-            //trackDiv.style.display = 'flex';
-            //trackDiv.style.flex-wrap = 'wrap';
-            //trackDiv.style.justifyContent = 'center';
-            //insert iframes for music data
-            const musicLabel = document.createElement('label');
-            musicLabel.innerHTML = "Music - OST";
-            //musicLabel.style.textAlign = "center";
-            //musicLabel.style.paddingBottom = "100px";
-            trackDiv.appendChild(musicLabel);
 
-            for(let track in jsonData['discs'][currDisc]['music']){
-                // Create a div to hold each track
-                console.log(track)
-                const newTrack = document.createElement('div');
-                newTrack.innerHTML = jsonData['discs'][currDisc]['music'][track];
-                trackDiv.appendChild(newTrack);
-            }
-            
-            container.appendChild(trackDiv);
             //document.getElementById("discContent").style.pointerEvents = "auto";
 
             //const photos = gsap.utils.toArray(".photo:not(:first-child)")
@@ -585,19 +581,6 @@ function playDisc(currDisc){
             let charKeys = Object.keys(jsonData['discs'][currDisc]['characters']);
             let currProg = -1;
 
-
-            /*ScrollTrigger.create({
-                scroller: ".dContain",
-                trigger:".dContents",
-                start: "top 20%",
-                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
-                end: "90% 20%", 
-                //onEnter:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 0.3}),
-                //onLeave:()=> t2.to(iframe, {delay:1, duration: 2, opacity: 1}),,
-                pin: ".panels3d",
-                markers: true,
-                
-            });*/
             mm.add("(min-width: 769px)", () =>{
                 let animation = gsap.to(aPhotos,{
                     yPercent:0, xPercent:0, duration:1, stagger:3, delay: 0
@@ -612,7 +595,7 @@ function playDisc(currDisc){
                     animation:animation,
                     scrub:true,
                     markers: true,
-                    anticipatePin: 1,
+                    anticipatePin: 5,
                     pinSpacing: true,
                     pinType: "transform",
                     fastScrollEnd: true, // This improves scroll end detection speed on touch devices
@@ -673,6 +656,7 @@ function playDisc(currDisc){
                 invalidateOnRefresh: true,
                 immediateRender:false,
                 ignoreMobileResize: false,
+                anticipatePin: 5,
                 fastScrollEnd: true, // This improves scroll end detection speed on touch devices
                 pinSpacing: true,
                 pinType: "transform"
