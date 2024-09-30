@@ -39,7 +39,7 @@
       },
       {
         "name": "Tekken 3",
-        "model": "FF73DDisc.glb",
+        "model": "Tekken33DDisc.glb",
         "description": "Step into the arena and unleash your inner fighter in the electrifying world of Tekken 3!",
         "color": "#B22222",
         "video": "https://www.youtube-nocookie.com/embed/IsvtUxEFQaU?autoplay=1&mute=1&loop=1&playlist=IsvtUxEFQaU",
@@ -74,17 +74,17 @@
       },  
       {
         "name": "Spyro Year of The Dragon",
-        "model": "FF73DDisc.glb",
+        "model": "SpyroYoTD3DDisc.glb",
         "description": "Join Spyro on a thrilling adventure to rescue the dragon eggs in Spyro: Year of the Dragon!",
         "color": "#FFA500",
         "video": "https://www.youtube-nocookie.com/embed/4WheOEu8mFw?autoplay=1&mute=1&loop=1&playlist=4WheOEu8mFw",
-        "music": ["<iframe class=\"embedTrack\" scrolling=\"no\" frameborder=\"no\" allow=\"autoplay\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1423616446&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false\"></iframe><div style=\"font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;\"><a href=\"https://soundcloud.com/vgmplanet\" title=\"VGM Planet\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">VGM Planet</a> · <a href=\"https://soundcloud.com/vgmplanet/sets/spyro-the-dragon-3-year-of-the-dragon-ost\" title=\"Spyro the Dragon 3: Year of the Dragon OST\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">Spyro the Dragon 3: Year of the Dragon OST</a></div>"],
+        "music": ["<iframe class=\"embedTrack\" scrolling=\"no\" frameborder=\"no\" allow=\"autoplay\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1098248803&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true\"></iframe><div style=\"font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;\"><a href=\"https://soundcloud.com/vgmplanet\" title=\"VGM Planet\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">VGM Planet</a> · <a href=\"https://soundcloud.com/vgmplanet/sets/spyro-the-dragon-3-year-of-the-dragon-ost\" title=\"Spyro the Dragon 3: Year of the Dragon OST\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">Spyro the Dragon 3: Year of the Dragon OST</a></div>"],
         "images":[
           "https://www.darkspyro.net/year/gallery013.jpg",
           "https://kresnik258gaming.wordpress.com/wp-content/uploads/2017/12/spyro_001.jpg",
           "https://i.kinja-img.com/image/upload/c_fit,q_60,w_645/430d0f4fea2880da841206dfe33a9cc1.jpg",
           "https://cdn.mos.cms.futurecdn.net/kDk7Vzza6ieMjJiXYsnxMH.jpg"
-        ],
+        ], 
         "about":{
           "Release Date":"October 24, 2000",
           "Genres":"platformer, collectathon, 3d exploration, cartoony",
@@ -109,11 +109,11 @@
       },
       {
         "name": "Street Fighter Alpha 3",
-        "model": "FF73DDisc.glb",
+        "model": "SFAlpha33DDisc.glb",
         "description": "Get ready for the ultimate street fighting experience with Street Fighter Alpha 3's diverse roster and intense action!",
         "color": "#FF4500",
         "video": "https://www.youtube-nocookie.com/embed/uXFPpYZ6CTQ?autoplay=1&mute=1&loop=1&playlist=uXFPpYZ6CTQ",
-        "music": ["<iframe class=\"embedTrack\" scrolling=\"no\" frameborder=\"no\" allow=\"autoplay\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1423880167&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false\"></iframe><div style=\"font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;\"><a href=\"https://soundcloud.com/vgmplanet\" title=\"VGM Planet\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">VGM Planet</a> · <a href=\"https://soundcloud.com/vgmplanet/sets/street-fighter-alpha-3-ost\" title=\"Street Fighter Alpha 3 OST\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">Street Fighter Alpha 3 OST</a></div>"],
+        "music": ["<iframe class=\"embedTrack\" scrolling=\"no\" frameborder=\"no\" allow=\"autoplay\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1386663931&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true\"></iframe><div style=\"font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;\"><a href=\"https://soundcloud.com/user-210974806\" title=\"MattThaGod\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">MattThaGod</a> · <a href=\"https://soundcloud.com/user-210974806/sets/street-fighter-alpha-3-ost\" title=\"Street Fighter Alpha/Zero 3 OST\" target=\"_blank\" style=\"color: #cccccc; text-decoration: none;\">Street Fighter Alpha/Zero 3 OST</a></div>"],
         "images": [
           "https://wiki.supercombo.gg/images/thumb/a/ae/SFA3_Cover_Art.jpg/772px-SFA3_Cover_Art.jpg?20211022201028",
           "https://sfgalleries.net/art/sfa3/sfz3-poster1_big.jpg",
@@ -144,7 +144,7 @@
       },
       {
         "name": "Castlevania: Symphony of the Night",
-        "model": "FF73DDisc.glb",
+        "model": "CSoTN3DDisc.glb",
         "description": "Delve into the gothic world of Castlevania: Symphony of the Night and uncover the secrets of Dracula's castle.",
         "color": "#8B0000",
         "video": "https://www.youtube-nocookie.com/embed/QHI--SDdaCA?autoplay=1&mute=1&loop=1&playlist=QHI--SDdaCA",

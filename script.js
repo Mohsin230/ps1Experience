@@ -18,20 +18,6 @@ if(ScrollTrigger.isTouch === 1){
 let mm = gsap.matchMedia(),
   breakPoint = 800;
 
-/*ScrollTrigger.scrollerProxy("#container-disc", {
-    scrollTop(value) {
-        return arguments.length ? document.querySelector("#container-disc").scrollTop = value : document.querySelector("#container-disc").scrollTop;
-    },
-    getBoundingClientRect() {
-        return {
-            top: 0,
-            left: 0,
-            width: window.innerWidth,
-            height: window.innerHeight
-        };
-    }
-});*/
-
 console.log(isMobile);
 //ScrollTrigger.normalizeScroll((true));
 //this one solves an issue for resizing a during a pinned scroll trigger
@@ -55,7 +41,7 @@ const renderer2 = new THREE.WebGLRenderer({antialias: true, alpha: true});
 renderer2.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer2.setSize(window.visualViewport.width/2, window.visualViewport.height/2);
-renderer2.setClearColor(0x000000 , 1);
+renderer2.setClearColor(0x000000 , 0);
 renderer2.setPixelRatio(window.devicePixelRatio);
 
 /*const renderer3 = new THREE.WebGLRenderer({antialias: true, alpha: true});
@@ -66,14 +52,13 @@ renderer3.setClearColor(0x000000 , 1);
 renderer3.setPixelRatio(window.devicePixelRatio);*/
 
 document.getElementById('container').appendChild(renderer.domElement);
-
 document.getElementById('discs').appendChild(renderer2.domElement);
 
 //document.getElementById('3dPanel').appendChild(renderer3.domElement);
 
 //set up Disc Menu Scene
 const discScene = new THREE.Scene();
-const discCamera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 2000);
+const discCamera = new THREE.PerspectiveCamera(22, window.visualViewport.width / window.visualViewport.height, 1, 2000);
 // Load 3D model
 const discLoader = new GLTFLoader();
 /*
@@ -259,12 +244,6 @@ window.addEventListener('resize', () =>
     renderer2.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     console.log("hi");
-    /*ScrollTrigger.normalizeScroll({
-        allowNestedScroll: true,
-        lockAxis: false,
-        momentum: self => Math.min(2, self.velocityY / 1000), // dynamically control the duration of the momentum when flick-scrolling
-        type: "touch", // now the page will be drag-scrollable on desktop because "pointer" is in the list
-      });*/
     ScrollTrigger.refresh();
     //textCamera.aspect = (sizes.width/2) / (sizes.height*0.75);
     //textCamera.updateProjectionMatrix();
@@ -429,8 +408,10 @@ function switchDisc(change){
     })
     gsap.to(".discMenu",{
         duration: 1,
-        backgroundColor:jsonData['discs'][currJsonDisc]['color'],
-    })
+        css:{
+            "--backGroundColor": jsonData['discs'][currJsonDisc]['color']
+        }
+        })
     //const t1  = gsap.timeline()
 
 
@@ -497,12 +478,6 @@ function playDisc(currDisc){
         opacity: 1,
         onComplete: function() {  
             
-            //const element = document.getElementById("container");
-            //element.remove();
-
-            //document.getElementById("discContent").style.pointerEvents = "auto";
-
-            //const photos = gsap.utils.toArray(".photo:not(:first-child)")
             const photos = gsap.utils.toArray(".photo");
             const chars  = [];
             const charTag = document.getElementById("characterTag");
@@ -519,16 +494,8 @@ function playDisc(currDisc){
                     let charDiv = document.createElement('img');
                     charDiv.classList.add("myChar");
                     chars.push(charDiv);
-                    //charDiv.style.overflow = "hidden";
                     charDiv.style.position = "absolute";
                     charDiv.style.width = "max(40vw,40vw)";
-                    //charDiv.style.overflow = "auto";
-                    //charDiv.style.maxWidth = "100%";
-                    //charDiv.style.height = "auto";
-                    //charDiv.style.maxHeight = "100vh";
-                    //charDiv.style.display = "flex";
-                    //charDiv.style.backgroundColor = "red";
-                    //charDiv.style.clipPath = "circle(55.8% at 85% 20%)";
                     charDiv.src = jsonData['discs'][currDisc]['characters'][key];
                     charPanel.appendChild(charDiv);
                 }
@@ -567,23 +534,66 @@ function playDisc(currDisc){
             console.log(photos);
             const aPhotos = photos.slice(1);
             gsap.set(aPhotos, {yPercent:0, xPercent:-105})
-            mm.add("(max-width: 768px)",() => {
-                let animation = gsap.to(aPhotos,{
-                    yPercent:0, xPercent:0, duration:1, stagger:3, delay: 1, yoyo: true, repeat: -1
-                });
-                
-                ScrollTrigger.refresh();
-            });
-            gsap.set(chars, {yPercent: -50, xPercent:105})
-            const animation2 = gsap.to(chars,{
-                xPercent:-50, duration:1, stagger:3
-            })
+            gsap.set(chars, {yPercent: -50, xPercent:0})
             let charKeys = Object.keys(jsonData['discs'][currDisc]['characters']);
             let currProg = -1;
+            let mobileProg = -1;
+
+            mm.add("(max-width: 768px)",() => {
+                let animation = gsap.to(aPhotos,{
+                    yPercent:0, xPercent:0, duration:1, stagger:3, delay: 1, yoyo: true, repeatDelay: 2, repeat: -1
+                });
+                
+                
+                let animation2 = gsap.to(chars,{
+                    xPercent:-50, 
+                    duration:1, 
+                    scrollTrigger:{
+                        scroller: ".dContain",
+                        trigger:".cPhotos",
+                        start: "top 50%",
+                        end: "90% 50%",
+                        toggleActions: "play pause play pause",
+                        markers: true
+                    },
+                    onRepeat:function(){
+                        gsap.to(".cPhotos", {
+                            duration: 0.5,
+                            backgroundColor: "rgb(151, 0, 0)"
+                        });
+                        gsap.to(".cPhotos", {
+                            delay:0.5,
+                            duration: 1,
+                            backgroundColor: "rgba(0, 255, 221, 0.178)"
+                        });
+                        
+                    },
+                    stagger:{
+                        each: 5,
+                        onComplete: function(i,target,targets){
+                            let currentElement = this.targets()[0];
+
+                            // Find the index of this element in the targets array
+                            let index = chars.indexOf(currentElement);
+                            gsap.to(document.getElementById("characterTag"),{
+                                duration: 0.5,
+                                text: charKeys[index],
+                                ease: "none",
+                            });
+                        }
+                    }, delay: 1, repeat: -1
+                });
+                ScrollTrigger.refresh();
+            });
+
+
 
             mm.add("(min-width: 769px)", () =>{
                 let animation = gsap.to(aPhotos,{
                     yPercent:0, xPercent:0, duration:1, stagger:3, delay: 0
+                })
+                let animation2 = gsap.to(chars,{
+                    xPercent:-50, duration:1, stagger:3
                 })
                 ScrollTrigger.create({
                     scroller: ".dContain",
@@ -603,65 +613,58 @@ function playDisc(currDisc){
                     invalidateOnRefresh: true
 
                     
-                    
+
                 });
 
-                
+                //scrollTrigger for character info
+                ScrollTrigger.create({
+                    scroller: ".dContain",
+                    trigger:".cPhotos",
+                    toggleActions: "play none reverse none",
+                    //onEnter:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
+                    //onLeave:()=> gsap.to(".charPanel", {duration: 1, top: "-0%"}),
+                    //onEnterBack:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
+                    //onLeaveBack:()=> gsap.to(".charPanel", {duration: 1, top: "0%"}),
+                    //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
+                    end: "bottom+=5000px 0%", 
+                    //onEnter:()=> console.log("enter"),
+                    //onLeave:()=> console.log("leave"),
+                    onUpdate: (self) => {
+                        //console.log(self.progress);
+                        gsap.to("progress",{
+                        duration: 0.1, 
+                        value: self.progress*100
+                        });
+                        //modulo of self.progress by 25% to get a animation
+                        //trigger for each image with a text change
+                        let charProg = Math.max(0,Math.floor((self.progress*100-10) / 30));
+                        if(charProg != currProg && charProg < 4){
+                            gsap.to(document.getElementById("characterTag"),{
+                                duration: 0.5,
+                                text: charKeys[charProg],
+                                ease: "none",
+                            });
+                            currProg = charProg;
+                        }
 
-                
-                //container.style.rowGap = "250vh";
-                //ScrollTrigger.refresh();
-                //container.style.overflowY = "hidden";
-                //container.style.height = "300%";
-                //disableScroll();
+
+                    },
+                    markers: true,
+                    pin: ".charPanel",
+                    animation: animation2,
+                    scrub: 1,
+                    invalidateOnRefresh: true,
+                    immediateRender:false,
+                    ignoreMobileResize: false,
+                    anticipatePin: 5,
+                    fastScrollEnd: true, // This improves scroll end detection speed on touch devices
+                    pinSpacing: true,
+                    pinType: "transform"
+                }
+                );
             });
             
-            //scrollTrigger for character info
-            ScrollTrigger.create({
-                scroller: ".dContain",
-                trigger:".cPhotos",
-                toggleActions: "play none reverse none",
-                onEnter:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
-                onLeave:()=> gsap.to(".charPanel", {duration: 1, top: "-0%"}),
-                onEnterBack:()=> gsap.to(".charPanel", {duration: 1, top:"0%"}),
-                onLeaveBack:()=> gsap.to(".charPanel", {duration: 1, top: "0%"}),
-                //end:()=> "+=" + document.getElementById('container-disc').offsetHeight,
-                end: "bottom+=5000px 0%", 
-                //onEnter:()=> console.log("enter"),
-                //onLeave:()=> console.log("leave"),
-                onUpdate: (self) => {
-                    //console.log(self.progress);
-                    gsap.to("progress",{
-                    duration: 0.1, 
-                    value: self.progress*100
-                    });
-                    //modulo of self.progress by 25% to get a animation
-                    //trigger for each image with a text change
-                    let charProg = Math.max(0,Math.floor((self.progress*100-10) / 30));
-                    if(charProg != currProg && charProg < 4){
-                        gsap.to(document.getElementById("characterTag"),{
-                            duration: 0.5,
-                            text: charKeys[charProg],
-                            ease: "none",
-                        });
-                        currProg = charProg;
-                    }
 
-
-                },
-                markers: true,
-                pin: ".charPanel",
-                animation: animation2,
-                scrub: 1,
-                invalidateOnRefresh: true,
-                immediateRender:false,
-                ignoreMobileResize: false,
-                anticipatePin: 5,
-                fastScrollEnd: true, // This improves scroll end detection speed on touch devices
-                pinSpacing: true,
-                pinType: "transform"
-            }
-            );
 
             // Refresh ScrollTrigger after scroller initialization
             /*ScrollTrigger.normalizeScroll({
@@ -697,36 +700,11 @@ function playDisc(currDisc){
         }
 
     });
-    //document.getElementById("video-iframe").src = jsonData['discs'][currDisc]['video'];
-    /*gsap.to(document.getElementById("video-iframe"),{
-        duration: 10,
-        opacity: 1,
-        src: jsonData['discs'][currDisc]['video'],
-    });*/
-    //document.getElementById("video-iframe").style.pointerEvents = "auto";
-    //const t1  = gsap.timeline()
-
-
-    
-
-
-    //t1.to(".discMenu", {duration: 2, left: '350%'}, "-=2");
 
 
 }
 
 
-
-/*
-//gsap anim for progress bar for character portraits
-gsap.to('progress', {
-    value: 100,
-    ease: 'none',
-    scrollTrigger: { 
-      trigger: "#mySection",
-      scrub: 0.3 
-    }
-});*/
 
 //gsap anim for scroll trigger of scrollable disc page (when disc is picked)
 gsap.fromTo(".canScroll",{opacity:1},{
@@ -750,33 +728,52 @@ gsap.to(".canScroll",{duration: 0.1, opacity:0});
 
 //const photos = gsap.utils.toArray(".des")
 const discName = document.getElementById("discName");
-
+var discCount = 0;
 fetch('discList.json')
   .then(response => response.json())
-  .then(data => {
+  .then(async data => {
     jsonData = data;
-    var discCount = 0;
-    for(const disc of jsonData['discs']){
-        discLoader.load(disc['model'], function (gltf) {
-            const mesh = gltf.scene;
-            //mesh.position.set(-0.125,1.45,3.5)
-            mesh.position.set(discCount*5,0,90);
-            mesh.rotation.x = 90;
-            mesh.rotation.y = 3.1;
-            discScene.add(mesh);
-            discCount += 1;
-        });
+    
+    // Load models in order using async/await
+    for (let disc of jsonData['discs']) {
+      await loadDiscModel(disc, discCount);
+      discCount += 1;
     }
+
     console.log(jsonData['discs']);  // Now jsonData holds the JSON data
-    discInfoUpdate(jsonData['discs'][0])
-    })
+    discInfoUpdate(jsonData['discs'][0]);
+  })
   .catch(error => console.error('Error fetching the JSON file:', error));
+
+// Helper function to load disc model as a promise
+function loadDiscModel(disc, count) {
+  return new Promise((resolve, reject) => {
+    discLoader.load(disc['model'], function (gltf) {
+      let mesh = gltf.scene;
+      // Set position and rotation
+      mesh.position.set(count * 5, 0, 93);
+      mesh.rotation.x = 90;
+      mesh.rotation.y = 3.1;
+      discScene.add(mesh);
+      
+      resolve(); // Resolve the promise after the model is loaded
+    }, undefined, function (error) {
+      reject(error); // Handle error while loading
+    });
+  });
+}
 
 
 function discInfoUpdate(discData){
     document.getElementById("discName").innerHTML = discData['name'];
     document.getElementById("discPara").innerHTML = discData['description'];
     document.getElementById("discPara").innerHTML = discData['description'];
+    gsap.to(".discMenu",{
+        duration: 1,
+        css:{
+            "--backGroundColor": discData['color']
+        }
+        });
 }
 
 
@@ -785,14 +782,6 @@ function discInfoUpdate(discData){
 function changeVideoSource(newVideoId) {
     const iframeSrc = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&enablejsapi=1`;
     videoIframe.src = iframeSrc;
-}
-
-// Disable scroll on the underlying page after a certain function runs
-function disableScroll() {
-    document.body.style.overflow = 'hidden'; 
-    document.body.style.height = '100%';
-    document.documentElement.style.overflow = 'hidden';
-    document.documentElement.style.height = '100%';
 }
 
 animate();

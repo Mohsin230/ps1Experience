@@ -1,3 +1,7 @@
+:root {
+    --backGroundColor: hsl(240, 100%, 10%);
+    --white: #ffffff;
+  }
 *{  
     touch-action: auto;
     scroll-behavior: smooth;
@@ -68,18 +72,23 @@ p{
     font-size: min(4.5vw, 1.3rem);
     width: 40vw;
 }
+svg{
+    position: absolute;
+    z-index: -10;
+}
 .dContents h3{
     font-size: 2rem;
     font-family: "Bebas Neue";
     text-align: center;
     margin-top: 0;
 }
+
 .playButton{
     pointer-events: auto;
     position: absolute;
     height: min(25vw,10rem);
-    bottom: 0;
-    right: 0;
+    bottom: 2%;
+    right: 2%;
     width: min(25vw,10rem);
     border-radius: 50%;
     border: 1px solid red;
@@ -100,7 +109,7 @@ p{
     position: absolute;
     height: min(25vw,10rem);
     bottom: -40%;
-    right: 0;
+    right: 2%;
     width: min(25vw,10rem);
     border-radius: 50%;
     border: 1px solid lightseagreen;
@@ -118,15 +127,21 @@ p{
 .discMenu:not(.exitMenu){
     position: absolute;
     height: 100%;
-    background-color: rgba(0, 0, 128, 0.49);
+    /*background-color: rgba(0, 0, 128, 0.49);*/
+    background-color: var(--backGroundColor);
     opacity: 85%;
     width: 50vw;
     left: 350%;
     display: grid;
     place-content: center;
     border: 1px solid rgb(20, 0, 56);
-    color: white;
     text-align: center;
+    justify-items: center;
+    color: white;
+    opacity: 1;
+    background-image: radial-gradient(#454b91 0.6000000000000001px, rgba(0, 0, 0, 0.308) 0.6000000000000001px);
+    background-size: 12px 12px;
+    z-index: -10;
 }
 .exitMenu{
     pointer-events: auto;
@@ -184,7 +199,6 @@ p{
     pointer-events: auto;
     position: absolute;
     bottom: 2%;
-    left: 30%;
     place-content: center;
     border: 4px solid rgb(0, 0, 0);
     border-radius: 10%;
@@ -197,25 +211,26 @@ p{
 }
 .rDisc{
     transition: opacity 0.5s ease-out;
-    pointer-events: none;
-    touch-action: none;
+    pointer-events: auto;
+    touch-action: auto;
     position: absolute;
-    bottom: 85%;
-    left: 5%;
+    top: 1%;
+    left: 1%;
     place-content: center;
     border: 4px solid rgb(0, 0, 0);
     border-radius: 50%;
-    height: 10vw;
-    width: 10vw;
+    height: max(10vw,3rem);
+    width: max(10vw,3rem);
     max-height: 100px;
     max-width: 100px;
     font-size:3vw;
-    background-color: powderblue; 
-    opacity: 0;
+    background-color: rgba(255, 0, 0, 0.541);
+    opacity: 0.3;
+    z-index: 1000;
 }
 .rDisc:hover{
     transition: opacity 0.2s ease-in;
-    opacity: 0.8;
+    opacity: 1;
 }
 #video-iframe { 
     pointer-events: none;
@@ -402,9 +417,6 @@ canvas { display: block; }
         box-shadow:4px 4px 4px rgba(0, 0, 0, 0.4);
         
     }
-    /*.discMenu{
-        width: 100vw !important;
-    }*/
   }
 .dContain{
     position: fixed;
@@ -535,14 +547,16 @@ canvas { display: block; }
     pointer-events: none;
     touch-action: none;
     border: 3px solid #2f21ada7;
+    backdrop-filter: blur(8.1px);
+    -webkit-backdrop-filter: blur(8.1px);
 }
 .charPanel h2{
     z-index: 101;
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: min(20%,5vw);
     /* bring your own prefixes */
-    transform: translate(-50%, -50%);
+    transform: translate(-0%, -50%);
     color: linear-gradient(90deg,rgb(0, 0, 0)0,rgba(255, 255, 255, 0) 100%);
     background-image: linear-gradient(90deg,rgb(153, 36, 36)0,rgba(255, 255, 255, 0) 100%);
     background-repeat: no-repeat;
@@ -570,7 +584,7 @@ progress {
     left: 0%;
     top:0vh;
     overflow: hidden;
-    border: 0px solid #2f21ada7;
+    border: 0px solid  #2f21ada7;
     position: absolute;
     background-color: rgba(0, 255, 221, 0.178);
     clip-path: circle(40vw at 100% 50%);
@@ -586,6 +600,11 @@ progress {
     background-color: rgb(63, 63, 63);
     background-size: cover;
     padding: 100vh;
+}
+.charPanel svg{
+    bottom:0;
+    transform: scaleX(-1);
+    min-height: 40vh;
 }
 /*
 .gsap-marker-scroller-start {
@@ -615,3 +634,4 @@ progress {
     opacity: 1 !important;
 
 }
+
