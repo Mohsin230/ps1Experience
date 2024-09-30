@@ -604,7 +604,7 @@ function playDisc(currDisc){
                     pin: ".photos",
                     animation:animation,
                     scrub:true,
-                    markers: true,
+                    //markers: true,
                     anticipatePin: 5,
                     pinSpacing: true,
                     pinType: "transform",
@@ -649,7 +649,7 @@ function playDisc(currDisc){
 
 
                     },
-                    markers: true,
+                    //markers: true,
                     pin: ".charPanel",
                     animation: animation2,
                     scrub: 1,
@@ -719,7 +719,7 @@ gsap.fromTo(".canScroll",{opacity:1},{
         end: "90% 85%", 
         //onEnter:()=> console.log("enter"),
         //onLeave:()=> console.log("leave"),
-        markers: true
+        //markers: true
     },
     opacity: 0,
     duration: 1
