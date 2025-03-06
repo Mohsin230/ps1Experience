@@ -1,3 +1,7 @@
+# View Website at link:
+
+# https://mohsin230.github.io/ps1Experience/
+
 Fixes needed: 
   * remove video ad or just store videos locally
   * add more 3d elements for the disc section of the website
